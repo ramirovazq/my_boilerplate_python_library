@@ -9,9 +9,13 @@ steps:
     description: "Cloning repository... --My Boilerplate for a python library--"
     repo: "ramirovazq/my_boilerplate_python_library"
     revision: "${{CF_BRANCH}}"
-    stage: "clone"    
+    stage: "clone"
+    when:
+      branch:
+        only:
+          - master
   build:
-    title: "Building Docker Image ... "
+    title: "Building Docker Image ... rbvs"
     type: "build"
     image_name: "ramirovazq/my_boilerplate_python_library"
     working_directory: "${{clone}}"
