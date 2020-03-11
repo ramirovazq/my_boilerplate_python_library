@@ -1,0 +1,34 @@
+version: "1.0"
+stages:
+  - "clone"
+  - "build"
+  - "test"
+steps:
+  clone:
+    type: "git-clone"
+    description: "Cloning repository... --My Boilerplate for a python library--"
+    repo: "ramirovazq/my_boilerplate_python_library"
+    revision: "${{CF_BRANCH}}"
+    stage: "clone"    
+  build:
+    title: "Building Docker Image ... "
+    type: "build"
+    image_name: "ramirovazq/my_boilerplate_python_library"
+    working_directory: "${{clone}}"
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
+    dockerfile: "Dockerfile"
+    stage: "build"
+  checks:
+    type: "parallel"
+    stage: "test"
+    steps:
+      unit_tests:
+        image: "${{build}}"
+        description: "Unit tests"
+        commands:
+          - pytest -v
+      code_style:
+        image: "${{build}}"
+        description: "Code style"
+        commands:
+          - black --check .
